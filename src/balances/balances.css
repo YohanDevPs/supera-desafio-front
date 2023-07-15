@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+}
+
+.saldo-info {
+  padding: 10px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.saldo-info h4 {
+  margin: 0;
+  margin-right: 5px;
+}
+
+.saldo-info h4,
+.saldo-info p {
+  border: none;
+}
+
+.wrapper-border {
+  height: 40px;
+  border: 1px solid #000;
+  border-radius: 0px;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}

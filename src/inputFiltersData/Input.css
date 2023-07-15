@@ -1,0 +1,40 @@
+/* custom.css */
+.custom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-col {
+  flex: 1;
+}
+
+/* Estilos para inputs de datas */
+.custom-date-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
+
+/* Estilos para o input do nome do operador transacionado */
+.custom-operator-name-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
+
+.input-accountId {
+  margin-left: auto;
+  width: 390px;
+  margin-bottom: 25px;
+}
+
+.custom-accountId {
+  border-radius: 4px;
+  border: 1px solid #000;
+  box-sizing: border-box;
+}
