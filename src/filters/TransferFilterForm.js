@@ -12,7 +12,7 @@ const InputExample = () => {
   const baseUrl = "http://localhost:8080/api/transfer/v1/";
 
   const handleSubmit = () => {
-    let url = baseUrl + codigoConta + "/?page=0";
+    let url = baseUrl + codigoConta + "?page=0";
 
     if (dataInicio) {
       url += `&startDate=${transformDate(dataInicio)}`;
@@ -25,12 +25,21 @@ const InputExample = () => {
     if (nomeOperador) {
       url += `&transactionOperatorName=${nomeOperador}`;
     }
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Erro na requisição:", error);
+      });
   };
 
   function transformDate(date) {
     const parts = date.split("/");
-    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}%2000:00:00`;
-    return formattedDate;
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return formattedDate + "%2000:00:00";
   }
 
   return (
