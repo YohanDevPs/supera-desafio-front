@@ -25,13 +25,23 @@
 }
 
 .input-accountId {
-  margin-left: auto;
-  width: 390px;
-  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .custom-accountId {
-  border-radius: 4px;
+  flex: 1 0 auto;
+  margin-right: 10px;
+  padding: 5px 10px;
   border: 1px solid #000;
-  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.input-accountId button {
+  flex: 0 0 auto;
+}
+
+.custom-col:not(:last-child) {
+  margin-right: 15px;
 }
