@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Pagination } from 'antd';
+import { Pagination } from 'antd';
 import "./TransferPagination.css";
 
 const TransferPagination = () => (
