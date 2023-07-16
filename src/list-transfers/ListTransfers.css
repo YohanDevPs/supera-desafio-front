@@ -1,0 +1,25 @@
+.ant-list-bordered .ant-list-item,
+.ant-list-bordered .ant-list-footer {
+  border-top: 1px solid #000; 
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  border-radius: 0; 
+}
+
+.list-container .sss-list {
+  border-top: 1px solid #000;
+  border-radius: 0;
+}
+
+.custom-list {
+  display: flex;
+}
+
+.custom-list div {
+  flex: 1;
+  margin-right: 10px; 
+}
+
+.custom-list div:last-child {
+  margin-right: 0; 
+}

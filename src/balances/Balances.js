@@ -1,7 +1,7 @@
 import React from "react";
-import "./balances.css";
+import "./Balances.css";
 
-const BalancesComponent = () => {
+const Balances = () => {
   const saldoTotal = 1500; 
   const saldoPeriodo = 500; 
 
@@ -19,4 +19,4 @@ const BalancesComponent = () => {
   );
 };
 
-export default BalancesComponent;
+export default Balances;

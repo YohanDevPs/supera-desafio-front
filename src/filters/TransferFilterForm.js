@@ -3,7 +3,8 @@ import "./TransferFilterForm.css";
 import React, { useState } from "react";
 import { Row, Col, Input, Button } from "antd";
 
-const InputExample = () => {
+
+const TransferFilterForm = () => {
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [nomeOperador, setNomeOperador] = useState("");
@@ -30,6 +31,8 @@ const InputExample = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        const contentList = data.pagedTransfers.content;
+        console.log(contentList);
       })
       .catch((error) => {
         console.error("Erro na requisição:", error);
@@ -93,4 +96,4 @@ const InputExample = () => {
   );
 };
 
-export default InputExample;
+export default TransferFilterForm;
