@@ -1,19 +1,16 @@
 import React from "react";
 import "./Balances.css";
 
-const Balances = () => {
-  const saldoTotal = 1500; 
-  const saldoPeriodo = 500; 
-
+const Balances = ({ totalBalance, periodBalance }) => {
   return (
     <div className="wrapper-border">
       <div className="saldo-info">
         <h4>Saldo Total:</h4>
-        <p>{`R$ ${saldoTotal.toFixed(2)}`}</p>
+        <p>{`R$ ${totalBalance.toFixed(2)}`}</p>
       </div>
       <div className="saldo-info">
         <h4>Saldo no Período:</h4>
-        <p>{`R$ ${saldoPeriodo.toFixed(2)}`}</p>
+        <p>{`R$ ${periodBalance.toFixed(2)}`}</p>
       </div>
     </div>
   );

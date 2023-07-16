@@ -2,13 +2,17 @@ import "./TransferFilterForm.css";
 
 import React, { useState } from "react";
 import { Row, Col, Input, Button } from "antd";
-
+import ListTransfers from "../list-transfers/ListTransfers";
+import Balances from "../balances/Balances";
 
 const TransferFilterForm = () => {
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [nomeOperador, setNomeOperador] = useState("");
   const [codigoConta, setCodigoConta] = useState("");
+  const [contentList, setContentList] = useState([]);
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [periodBalance, setPeriodBalance] = useState(0);
 
   const baseUrl = "http://localhost:8080/api/transfer/v1/";
 
@@ -30,9 +34,13 @@ const TransferFilterForm = () => {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const contentList = data.pagedTransfers.content;
-        console.log(contentList);
+        setContentList(contentList);
+
+        const totalBalance = parseFloat(data.totalBalance);
+        setTotalBalance(totalBalance);
+        const periodBalance = parseFloat(data.periodBalance);
+        setPeriodBalance(periodBalance);
       })
       .catch((error) => {
         console.error("Erro na requisição:", error);
@@ -92,6 +100,8 @@ const TransferFilterForm = () => {
           </Col>
         </Row>
       </div>
+      <Balances totalBalance={totalBalance} periodBalance={periodBalance} />
+      <ListTransfers datas={contentList} />
     </>
   );
 };
