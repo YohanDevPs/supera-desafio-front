@@ -45,3 +45,10 @@
 .custom-col:not(:last-child) {
   margin-right: 15px;
 }
+
+.pagination {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  border: 1px solid #000;
+}

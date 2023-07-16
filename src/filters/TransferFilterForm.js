@@ -1,7 +1,7 @@
 import "./TransferFilterForm.css";
 
-import React, { useState } from "react";
-import { Row, Col, Input, Button } from "antd";
+import React, { useState, useEffect } from "react";
+import { Row, Col, Input, Button, Pagination } from "antd";
 import ListTransfers from "../list-transfers/ListTransfers";
 import Balances from "../balances/Balances";
 
@@ -10,14 +10,31 @@ const TransferFilterForm = () => {
   const [dataFim, setDataFim] = useState("");
   const [nomeOperador, setNomeOperador] = useState("");
   const [codigoConta, setCodigoConta] = useState("");
-  const [contentList, setContentList] = useState([]);
   const [totalBalance, setTotalBalance] = useState(0);
   const [periodBalance, setPeriodBalance] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [filteredBankTransferPage, setFilteredBankTransferPage] = useState({
+    pagedTransfers: {
+      content: [],
+    },
+  });
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    setIsButtonDisabled(!codigoConta || isNaN(codigoConta));
+  }, [codigoConta]);
+
+  const handleCodigoContaChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, "");
+    setCodigoConta(numericValue);
+  };
 
   const baseUrl = "http://localhost:8080/api/transfer/v1/";
 
   const handleSubmit = () => {
-    let url = baseUrl + codigoConta + "?page=0";
+    let url = baseUrl + codigoConta + "?page=" + currentPage;
 
     if (dataInicio) {
       url += `&startDate=${transformDate(dataInicio)}`;
@@ -34,17 +51,17 @@ const TransferFilterForm = () => {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        const contentList = data.pagedTransfers.content;
-        setContentList(contentList);
-
-        const totalBalance = parseFloat(data.totalBalance);
-        setTotalBalance(totalBalance);
-        const periodBalance = parseFloat(data.periodBalance);
-        setPeriodBalance(periodBalance);
+        setFilteredBankTransferPage(data);
+        setTotalBalance(parseFloat(data.totalBalance));
+        setPeriodBalance(parseFloat(data.periodBalance));
       })
       .catch((error) => {
         console.error("Erro na requisição:", error);
       });
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page - 1);
   };
 
   function transformDate(date) {
@@ -85,23 +102,35 @@ const TransferFilterForm = () => {
         </Col>
       </Row>
       <div className="input-accountId">
-        <Button type="primary" onClick={handleSubmit}>
+        <Button
+          type="primary"
+          onClick={handleSubmit}
+          disabled={isButtonDisabled}
+        >
           Pesquisar
         </Button>
         <Row gutter={16}>
           <Col span={24}>
-            <p>Código da conta</p>
+            <p>
+              <span style={{ color: "red", marginRight: 4 }}>*</span>
+              Código da conta
+            </p>
             <Input
               placeholder="Código da conta"
               className="custom-accountId"
               value={codigoConta}
-              onChange={(e) => setCodigoConta(e.target.value)}
+              onChange={handleCodigoContaChange}
+              required
             />
           </Col>
         </Row>
       </div>
       <Balances totalBalance={totalBalance} periodBalance={periodBalance} />
-      <ListTransfers datas={contentList} />
+      <ListTransfers datas={filteredBankTransferPage.pagedTransfers.content} />
+      <div className="pagination">
+        <Pagination defaultCurrent={1} total={50} onChange={handlePageChange} />
+        <p>Página atual: {currentPage}</p>
+      </div>
     </>
   );
 };
