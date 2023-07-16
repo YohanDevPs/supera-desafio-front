@@ -1,13 +1,13 @@
-import "./TransferFilterForm.css";
-
 import React, { useState, useEffect } from "react";
-import { Row, Col, Input, Button, Pagination } from "antd";
+import { Row, Col, Input, Button, Pagination, DatePicker, notification } from "antd";
 import ListTransfers from "../list-transfers/ListTransfers";
 import Balances from "../balances/Balances";
 
+import "./TransferFilterForm.css";
+
 const TransferFilterForm = () => {
-  const [dataInicio, setDataInicio] = useState("");
-  const [dataFim, setDataFim] = useState("");
+  const [dataInicio, setDataInicio] = useState(null);
+  const [dataFim, setDataFim] = useState(null);
   const [nomeOperador, setNomeOperador] = useState("");
   const [codigoConta, setCodigoConta] = useState("");
   const [totalBalance, setTotalBalance] = useState(0);
@@ -49,14 +49,26 @@ const TransferFilterForm = () => {
     }
 
     fetch(url)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            throw new Error(errorData.message); 
+          });
+        }
+        return response.json();
+      })
       .then((data) => {
         setFilteredBankTransferPage(data);
         setTotalBalance(parseFloat(data.totalBalance));
         setPeriodBalance(parseFloat(data.periodBalance));
       })
       .catch((error) => {
-        console.error("Erro na requisição:", error);
+        console.error("Erro:", error.message);
+        notification.error({
+          message: "Erro",
+          description: error.message,
+          duration: 5, 
+        });
       });
   };
 
@@ -65,9 +77,7 @@ const TransferFilterForm = () => {
   };
 
   function transformDate(date) {
-    const parts = date.split("/");
-    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-    return formattedDate + "%2000:00:00";
+    return date.format("YYYY-MM-DD HH:mm:ss");
   }
 
   return (
@@ -75,20 +85,23 @@ const TransferFilterForm = () => {
       <Row gutter={16} className="custom-row">
         <Col span={8} className="custom-col">
           <p>Data Início</p>
-          <Input
-            placeholder="dd/mm/aaaa"
-            className="custom-date-input"
+          <DatePicker
             value={dataInicio}
-            onChange={(e) => setDataInicio(e.target.value)}
+            onChange={(date) => setDataInicio(date)}
+            className="custom-date-input"
+            format="DD/MM/YYYY"
           />
         </Col>
         <Col span={8} className="custom-col">
           <p>Data de Fim</p>
-          <Input
-            placeholder="dd/mm/aaaa"
-            className="custom-date-input"
+          <DatePicker
             value={dataFim}
-            onChange={(e) => setDataFim(e.target.value)}
+            onChange={(date) => setDataFim(date)}
+            className="custom-date-input"
+            format="DD/MM/YYYY"
+            disabledDate={(current) =>
+              dataInicio && current && current.isBefore(dataInicio)
+            }
           />
         </Col>
         <Col span={8} className="custom-col">
