@@ -1,4 +1,4 @@
-.custom-row {
+.input-row-upper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +24,7 @@
   border-radius: 4px;
 }
 
-.input-accountId {
+.input-row-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -38,7 +38,7 @@
   margin-bottom: 20px;
 }
 
-.input-accountId button {
+.input-row-bottom button {
   flex: 0 0 auto;
 }
 

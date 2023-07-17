@@ -15,9 +15,11 @@ import "./TransferFilterForm.css";
 
 const TransferFilterForm = () => {
   const [dataInicio, setDataInicio] = useState(null);
+  const [oldUrl, setOldUrl] = useState("");
   const [dataFim, setDataFim] = useState(null);
   const [nomeOperador, setNomeOperador] = useState("");
   const [codigoConta, setCodigoConta] = useState("");
+  const [oldCodigoConta, setOldCodigoConta] = useState("");
   const [isInitialRender, setIsInitialRender] = useState(true);
   const [filteredBankTransferPage, setFilteredBankTransferPage] = useState({
     pagedTransfers: {
@@ -50,7 +52,9 @@ const TransferFilterForm = () => {
 
   const baseUrl = "http://localhost:8080/api/transfer/v1/";
 
+  let paginationActivated = false;
   const handlePageChange = (pageNumber) => {
+    paginationActivated = true;
     setCurrentPage(pageNumber === 1 ? 0 : pageNumber);
   };
 
@@ -63,9 +67,15 @@ const TransferFilterForm = () => {
   }, [currentPage]);
 
   const handleSearch = () => {
-    const adjustedPage = currentPage === 0 ? 1 : currentPage;
-
-    let url = baseUrl + codigoConta + "?page=" + (adjustedPage - 1);
+    let url;
+    if (paginationActivated === false && oldCodigoConta !== codigoConta) {
+      url = baseUrl + codigoConta + "?page=0";
+      setCurrentPage(0);
+      paginationActivated = true;
+    } else {
+      const adjustedPage = currentPage === 0 ? 1 : currentPage;
+      url = baseUrl + codigoConta + "?page=" + (adjustedPage - 1);
+    }
 
     if (dataInicio) {
       url += `&startDate=${transformDate(dataInicio)}`;
@@ -79,6 +89,11 @@ const TransferFilterForm = () => {
       url += `&transactionOperatorName=${nomeOperador}`;
     }
 
+    if(oldUrl === url) {
+      return;
+    }
+    
+    setOldUrl(url);
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -94,6 +109,7 @@ const TransferFilterForm = () => {
           adjustedData.pagedTransfers.page.number = 1;
         }
         setFilteredBankTransferPage(data);
+        setOldCodigoConta(codigoConta);
       })
       .catch((error) => {
         console.error("Erro:", error.message);
@@ -111,7 +127,7 @@ const TransferFilterForm = () => {
 
   return (
     <>
-      <Row gutter={16} className="custom-row">
+      <Row gutter={16} className="input-row-upper">
         <Col span={8} className="custom-col">
           <p>Data Início</p>
           <DatePicker
@@ -143,7 +159,7 @@ const TransferFilterForm = () => {
           />
         </Col>
       </Row>
-      <div className="input-accountId">
+      <div className="input-row-bottom">
         <Button
           type="primary"
           onClick={handleSearch}
