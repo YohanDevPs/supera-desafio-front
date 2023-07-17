@@ -1,13 +1,6 @@
-.ant-list-bordered .ant-list-item,
-.ant-list-bordered .ant-list-footer {
-  border-top: 1px solid #000; 
+.list-container {
   border-left: 1px solid #000;
   border-right: 1px solid #000;
-  border-radius: 0; 
-}
-
-.list-container .sss-list {
-  border-top: 1px solid #000;
   border-radius: 0;
 }
 

@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Input, Button, Pagination, DatePicker, notification } from "antd";
+import {
+  Row,
+  Col,
+  Input,
+  Button,
+  Pagination,
+  DatePicker,
+  notification,
+} from "antd";
 import ListTransfers from "../list-transfers/ListTransfers";
 import Balances from "../balances/Balances";
 
@@ -10,13 +18,19 @@ const TransferFilterForm = () => {
   const [dataFim, setDataFim] = useState(null);
   const [nomeOperador, setNomeOperador] = useState("");
   const [codigoConta, setCodigoConta] = useState("");
-  const [totalBalance, setTotalBalance] = useState(0);
-  const [periodBalance, setPeriodBalance] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [filteredBankTransferPage, setFilteredBankTransferPage] = useState({
     pagedTransfers: {
       content: [],
+      page: {
+        size: 0,
+        totalElements: 0,
+        totalPages: 0,
+        number: 0,
+      },
     },
+    totalBalance: 0,
+    periodBalance: 0,
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -33,7 +47,7 @@ const TransferFilterForm = () => {
 
   const baseUrl = "http://localhost:8080/api/transfer/v1/";
 
-  const handleSubmit = () => {
+  const handleSearch = () => {
     let url = baseUrl + codigoConta + "?page=" + currentPage;
 
     if (dataInicio) {
@@ -52,28 +66,22 @@ const TransferFilterForm = () => {
       .then((response) => {
         if (!response.ok) {
           return response.json().then((errorData) => {
-            throw new Error(errorData.message); 
+            throw new Error(errorData.message);
           });
         }
         return response.json();
       })
       .then((data) => {
         setFilteredBankTransferPage(data);
-        setTotalBalance(parseFloat(data.totalBalance));
-        setPeriodBalance(parseFloat(data.periodBalance));
       })
       .catch((error) => {
         console.error("Erro:", error.message);
         notification.error({
           message: "Erro",
           description: error.message,
-          duration: 5, 
+          duration: 5,
         });
       });
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page - 1);
   };
 
   function transformDate(date) {
@@ -117,7 +125,7 @@ const TransferFilterForm = () => {
       <div className="input-accountId">
         <Button
           type="primary"
-          onClick={handleSubmit}
+          onClick={handleSearch}
           disabled={isButtonDisabled}
         >
           Pesquisar
@@ -138,10 +146,17 @@ const TransferFilterForm = () => {
           </Col>
         </Row>
       </div>
-      <Balances totalBalance={totalBalance} periodBalance={periodBalance} />
+      <Balances
+        totalBalance={parseFloat(filteredBankTransferPage.totalBalance)}
+        periodBalance={parseFloat(filteredBankTransferPage.periodBalance)}
+      />
       <ListTransfers datas={filteredBankTransferPage.pagedTransfers.content} />
       <div className="pagination">
-        <Pagination defaultCurrent={1} total={50} onChange={handlePageChange} />
+        <Pagination
+          defaultCurrent={0}
+          total={50}
+          onChange={(page) => setCurrentPage(page - 1)}
+        />
         <p>Página atual: {currentPage}</p>
       </div>
     </>
