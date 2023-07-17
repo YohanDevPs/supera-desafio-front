@@ -18,7 +18,7 @@ const TransferFilterForm = () => {
   const [dataFim, setDataFim] = useState(null);
   const [nomeOperador, setNomeOperador] = useState("");
   const [codigoConta, setCodigoConta] = useState("");
-  const [currentPage, setCurrentPage] = useState(0);
+  const [isInitialRender, setIsInitialRender] = useState(true);
   const [filteredBankTransferPage, setFilteredBankTransferPage] = useState({
     pagedTransfers: {
       content: [],
@@ -32,6 +32,9 @@ const TransferFilterForm = () => {
     totalBalance: 0,
     periodBalance: 0,
   });
+  const [currentPage, setCurrentPage] = useState(
+    filteredBankTransferPage.pagedTransfers.page.number
+  );
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
@@ -47,8 +50,22 @@ const TransferFilterForm = () => {
 
   const baseUrl = "http://localhost:8080/api/transfer/v1/";
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber === 1 ? 0 : pageNumber);
+  };
+
+  useEffect(() => {
+    if (isInitialRender) {
+      setIsInitialRender(false);
+    } else {
+      handleSearch();
+    }
+  }, [currentPage]);
+
   const handleSearch = () => {
-    let url = baseUrl + codigoConta + "?page=" + currentPage;
+    const adjustedPage = currentPage === 0 ? 1 : currentPage;
+
+    let url = baseUrl + codigoConta + "?page=" + (adjustedPage - 1);
 
     if (dataInicio) {
       url += `&startDate=${transformDate(dataInicio)}`;
@@ -72,6 +89,10 @@ const TransferFilterForm = () => {
         return response.json();
       })
       .then((data) => {
+        const adjustedData = { ...data };
+        if (adjustedData.pagedTransfers.page.number === 0) {
+          adjustedData.pagedTransfers.page.number = 1;
+        }
         setFilteredBankTransferPage(data);
       })
       .catch((error) => {
@@ -153,9 +174,11 @@ const TransferFilterForm = () => {
       <ListTransfers datas={filteredBankTransferPage.pagedTransfers.content} />
       <div className="pagination">
         <Pagination
-          defaultCurrent={0}
-          total={50}
-          onChange={(page) => setCurrentPage(page - 1)}
+          total={filteredBankTransferPage.pagedTransfers.page.totalElements}
+          pageSize={filteredBankTransferPage.pagedTransfers.page.size}
+          defaultCurrent={1}
+          current={currentPage === 0 ? 1 : currentPage}
+          onChange={handlePageChange}
         />
         <p>Página atual: {currentPage}</p>
       </div>
