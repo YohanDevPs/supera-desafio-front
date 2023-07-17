@@ -3,7 +3,6 @@ import { List } from "antd";
 import "./ListTransfers.css";
 
 const ListTransfers = ({ datas }) => {
-
   return (
     <div className="list-container">
       <List
@@ -13,10 +12,10 @@ const ListTransfers = ({ datas }) => {
           <List.Item className="sss-list">
             <div className="custom-list">
               <div>
-                <p>Dados: {item.transferDate}</p>
+                <p>Data: {item.transferDate}</p>
               </div>
               <div>
-                <p>Valência: {item.amount}</p>
+                <p>Valor: R$ {item.amount}</p>
               </div>
               <div>
                 <p>Tipo: {item.type}</p>
