@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { addDays } from "date-fns";
+import { baseUrl } from "../constants/baseUrl";
 import {
   Row,
   Col,
@@ -8,19 +10,20 @@ import {
   DatePicker,
   notification,
 } from "antd";
-import ListTransfers from "../list-transfers/ListTransfers";
+import TableTransfers from "../table-transfers/TableTransfers";
 import Balances from "../balances/Balances";
 
 import "./TransferFilterForm.css";
 
 const TransferFilterForm = () => {
-  const [dataInicio, setDataInicio] = useState(null);
-  const [oldUrl, setOldUrl] = useState("");
-  const [dataFim, setDataFim] = useState(null);
-  const [nomeOperador, setNomeOperador] = useState("");
-  const [codigoConta, setCodigoConta] = useState("");
-  const [oldCodigoConta, setOldCodigoConta] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [usedUrl, setUsedUrl] = useState("");
+  const [transactionOperatorName, setTransactionOperatorName] = useState("");
+  const [accountCode, setAccountCode] = useState("");
+  const [usedAccountCode, setUsedAccountCode] = useState("");
   const [isInitialRender, setIsInitialRender] = useState(true);
+  const [isButtonSearchDisabled, setIsButtonSearchDisabled] = useState(true);
   const [filteredBankTransferPage, setFilteredBankTransferPage] = useState({
     pagedTransfers: {
       content: [],
@@ -38,25 +41,9 @@ const TransferFilterForm = () => {
     filteredBankTransferPage.pagedTransfers.page.number
   );
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-
   useEffect(() => {
-    setIsButtonDisabled(!codigoConta || isNaN(codigoConta));
-  }, [codigoConta]);
-
-  const handleCodigoContaChange = (e) => {
-    const inputValue = e.target.value;
-    const numericValue = inputValue.replace(/\D/g, "");
-    setCodigoConta(numericValue);
-  };
-
-  const baseUrl = "http://localhost:8080/api/transfer/v1/";
-
-  let paginationActivated = false;
-  const handlePageChange = (pageNumber) => {
-    paginationActivated = true;
-    setCurrentPage(pageNumber === 1 ? 0 : pageNumber);
-  };
+    setIsButtonSearchDisabled(!accountCode || isNaN(accountCode));
+  }, [accountCode]);
 
   useEffect(() => {
     if (isInitialRender) {
@@ -66,34 +53,50 @@ const TransferFilterForm = () => {
     }
   }, [currentPage]);
 
+  const handleCodigoContaChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, "");
+    setAccountCode(numericValue);
+  };
+
+  let paginationActivated = false;
+  const handlePageChange = (pageNumber) => {
+    paginationActivated = true;
+    setCurrentPage(pageNumber === 1 ? 0 : pageNumber);
+  };
+
+  function transformDate(date) {
+    return date.format("YYYY-MM-DD HH:mm:ss");
+  }
+
   const handleSearch = () => {
     let url;
-    if (paginationActivated === false && oldCodigoConta !== codigoConta) {
-      url = baseUrl + codigoConta + "?page=0";
+    if (paginationActivated === false && usedAccountCode !== accountCode) {
+      url = baseUrl + accountCode + "?page=0";
       setCurrentPage(0);
       paginationActivated = true;
     } else {
       const adjustedPage = currentPage === 0 ? 1 : currentPage;
-      url = baseUrl + codigoConta + "?page=" + (adjustedPage - 1);
+      url = baseUrl + accountCode + "?page=" + (adjustedPage - 1);
     }
 
-    if (dataInicio) {
-      url += `&startDate=${transformDate(dataInicio)}`;
+    if (startDate) {
+      url += `&startDate=${transformDate(startDate)}`;
     }
 
-    if (dataFim) {
-      url += `&endDate=${transformDate(dataFim)}`;
+    if (endDate) {
+      url += `&endDate=${transformDate(endDate)}`;
     }
 
-    if (nomeOperador) {
-      url += `&transactionOperatorName=${nomeOperador}`;
+    if (transactionOperatorName) {
+      url += `&transactionOperatorName=${transactionOperatorName}`;
     }
 
-    if(oldUrl === url) {
+    if (usedUrl === url) {
       return;
     }
-    
-    setOldUrl(url);
+
+    setUsedUrl(url);
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -109,7 +112,7 @@ const TransferFilterForm = () => {
           adjustedData.pagedTransfers.page.number = 1;
         }
         setFilteredBankTransferPage(data);
-        setOldCodigoConta(codigoConta);
+        setUsedAccountCode(accountCode);
       })
       .catch((error) => {
         console.error("Erro:", error.message);
@@ -121,18 +124,14 @@ const TransferFilterForm = () => {
       });
   };
 
-  function transformDate(date) {
-    return date.format("YYYY-MM-DD HH:mm:ss");
-  }
-
   return (
     <>
       <Row gutter={16} className="input-row-upper">
         <Col span={8} className="custom-col">
           <p>Data Início</p>
           <DatePicker
-            value={dataInicio}
-            onChange={(date) => setDataInicio(date)}
+            value={startDate}
+            onChange={(date) => setStartDate(date)}
             className="custom-date-input"
             format="DD/MM/YYYY"
           />
@@ -140,12 +139,13 @@ const TransferFilterForm = () => {
         <Col span={8} className="custom-col">
           <p>Data de Fim</p>
           <DatePicker
-            value={dataFim}
-            onChange={(date) => setDataFim(date)}
+            value={endDate}
+            onChange={(date) => setEndDate(date)}
             className="custom-date-input"
             format="DD/MM/YYYY"
             disabledDate={(current) =>
-              dataInicio && current && current.isBefore(dataInicio)
+              (startDate && current && current.isBefore(startDate)) ||
+              current.isAfter(new Date())
             }
           />
         </Col>
@@ -154,8 +154,8 @@ const TransferFilterForm = () => {
           <Input
             placeholder="Nome do operador"
             className="custom-operator-name-input"
-            value={nomeOperador}
-            onChange={(e) => setNomeOperador(e.target.value)}
+            value={transactionOperatorName}
+            onChange={(e) => setTransactionOperatorName(e.target.value)}
           />
         </Col>
       </Row>
@@ -163,7 +163,7 @@ const TransferFilterForm = () => {
         <Button
           type="primary"
           onClick={handleSearch}
-          disabled={isButtonDisabled}
+          disabled={isButtonSearchDisabled}
         >
           Pesquisar
         </Button>
@@ -176,7 +176,7 @@ const TransferFilterForm = () => {
             <Input
               placeholder="Código da conta"
               className="custom-accountId"
-              value={codigoConta}
+              value={accountCode}
               onChange={handleCodigoContaChange}
               required
             />
@@ -187,7 +187,7 @@ const TransferFilterForm = () => {
         totalBalance={parseFloat(filteredBankTransferPage.totalBalance)}
         periodBalance={parseFloat(filteredBankTransferPage.periodBalance)}
       />
-      <ListTransfers datas={filteredBankTransferPage.pagedTransfers.content} />
+      <TableTransfers datas={filteredBankTransferPage.pagedTransfers.content} />
       <div className="pagination">
         <Pagination
           total={filteredBankTransferPage.pagedTransfers.page.totalElements}
