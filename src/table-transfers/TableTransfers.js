@@ -16,7 +16,12 @@ const TableTransfers = ({ datas }) => {
                 <p>Data: {format(parseISO(item.transferDate), "dd/MM/yyyy")}</p>
               </div>
               <div>
-                <p>Valor: R$ {item.amount}</p>
+                <p>
+                  Valor: R${" "}
+                  {item.amount.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                  })}
+                </p>
               </div>
               <div>
                 <p>Tipo: {item.type}</p>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { addDays } from "date-fns";
 import { baseUrl } from "../constants/baseUrl";
 import {
   Row,
@@ -126,8 +125,8 @@ const TransferFilterForm = () => {
 
   return (
     <>
-      <Row gutter={16} className="input-row-upper">
-        <Col span={8} className="custom-col">
+      <Row gutter={16}>
+        <Col style={{ flex: 1, maxWidth: "200px" }}>
           <p>Data Início</p>
           <DatePicker
             value={startDate}
@@ -136,7 +135,7 @@ const TransferFilterForm = () => {
             format="DD/MM/YYYY"
           />
         </Col>
-        <Col span={8} className="custom-col">
+        <Col style={{ flex: 1, maxWidth: "200px" }}>
           <p>Data de Fim</p>
           <DatePicker
             value={endDate}
@@ -149,14 +148,24 @@ const TransferFilterForm = () => {
             }
           />
         </Col>
-        <Col span={8} className="custom-col">
-          <p>Nome do operador transacionado</p>
-          <Input
-            placeholder="Nome do operador"
-            className="custom-operator-name-input"
-            value={transactionOperatorName}
-            onChange={(e) => setTransactionOperatorName(e.target.value)}
-          />
+        <Col
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+          }}
+        >
+          <div className="container-input-operator">
+            <p class="operator-text">Nome do operador transacionado</p>
+            <Input
+              placeholder="Nome do operador"
+              className="input-operator-name"
+              style={{ width: "400px" }} // Defina o tamanho do width desejado aqui
+              value={transactionOperatorName}
+              onChange={(e) => setTransactionOperatorName(e.target.value)}
+            />
+          </div>
         </Col>
       </Row>
       <div className="input-row-bottom">
@@ -196,7 +205,6 @@ const TransferFilterForm = () => {
           current={currentPage === 0 ? 1 : currentPage}
           onChange={handlePageChange}
         />
-        <p>Página atual: {currentPage}</p>
       </div>
     </>
   );

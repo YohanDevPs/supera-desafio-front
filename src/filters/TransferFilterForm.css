@@ -1,27 +1,26 @@
-.input-row-upper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .custom-col {
   flex: 1;
 }
 
 .custom-date-input {
-  width: 100%;
+  width: 150px;
   box-sizing: border-box;
   padding: 8px;
   border: 1px solid #000;
   border-radius: 4px;
 }
+.container-input-operator {
+  justify-content: flex-end;
+  align-items: center; 
+}
 
-.custom-operator-name-input {
-  width: 100%;
-  box-sizing: border-box;
+.input-operator-name {
   padding: 8px;
-  border: 1px solid #000;
-  border-radius: 4px;
+    border: 1px solid #000;
+}
+
+.operator-text {
+  margin-right: 10px;
 }
 
 .input-row-bottom {
