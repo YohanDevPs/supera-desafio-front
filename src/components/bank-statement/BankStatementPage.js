@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "../constants/baseUrl";
+import { baseUrl } from "../../constants/baseUrl";
 import {
   Row,
   Col,
@@ -9,12 +9,12 @@ import {
   DatePicker,
   notification,
 } from "antd";
-import TableTransfers from "../table-transfers/TableTransfers";
-import Balances from "../balances/Balances";
+import BankStatementTable from "./bank-statement-table/BankStatementTable";
+import BalanceSummary from "./balance-summary/BalanceSummary";
 
-import "./TransferFilterForm.css";
+import "./BankStatementPage.css";
 
-const TransferFilterForm = () => {
+const BankStatementPage = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [usedUrl, setUsedUrl] = useState("");
@@ -192,11 +192,13 @@ const TransferFilterForm = () => {
           </Col>
         </Row>
       </div>
-      <Balances
+      <BalanceSummary
         totalBalance={parseFloat(filteredBankTransferPage.totalBalance)}
         periodBalance={parseFloat(filteredBankTransferPage.periodBalance)}
       />
-      <TableTransfers datas={filteredBankTransferPage.pagedTransfers.content} />
+      <BankStatementTable
+        datas={filteredBankTransferPage.pagedTransfers.content}
+      />
       <div className="pagination">
         <Pagination
           total={filteredBankTransferPage.pagedTransfers.page.totalElements}
@@ -210,4 +212,4 @@ const TransferFilterForm = () => {
   );
 };
 
-export default TransferFilterForm;
+export default BankStatementPage;

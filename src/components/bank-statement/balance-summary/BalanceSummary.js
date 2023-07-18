@@ -1,7 +1,7 @@
 import React from "react";
-import "./Balances.css";
+import "./BalanceSummary.css";
 
-const Balances = ({ totalBalance, periodBalance }) => {
+const BalanceSummary = ({ totalBalance, periodBalance }) => {
   return (
     <div className="wrapper-border">
       <div className="saldo-info">
@@ -20,4 +20,4 @@ const Balances = ({ totalBalance, periodBalance }) => {
   );
 };
 
-export default Balances;
+export default BalanceSummary;

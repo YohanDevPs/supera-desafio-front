@@ -1,16 +1,16 @@
 import React from "react";
 import { format, parseISO } from "date-fns";
 import { List } from "antd";
-import "./TableTransfers.css";
+import "./BankStatementTable.css";
 
-const TableTransfers = ({ datas }) => {
+const BankStatementTable = ({ datas }) => {
   return (
     <div className="list-container">
       <List
         bordered
         dataSource={datas}
         renderItem={(item) => (
-          <List.Item className="sss-list">
+          <List.Item className="custom-list-item">
             <div className="custom-list">
               <div>
                 <p>Data: {format(parseISO(item.transferDate), "dd/MM/yyyy")}</p>
@@ -38,4 +38,4 @@ const TableTransfers = ({ datas }) => {
   );
 };
 
-export default TableTransfers;
+export default BankStatementTable;
