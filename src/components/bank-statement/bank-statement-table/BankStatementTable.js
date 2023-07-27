@@ -1,38 +1,47 @@
 import React from "react";
 import { format, parseISO } from "date-fns";
-import { List } from "antd";
+import { Table } from "antd";
 import "./BankStatementTable.css";
 
 const BankStatementTable = ({ datas }) => {
   return (
-    <div className="list-container">
-      <List
+    <div className="table.container">
+      <Table
         bordered
         dataSource={datas}
-        renderItem={(item) => (
-          <List.Item className="custom-list-item">
-            <div className="custom-list">
-              <div>
-                <p>Data: {format(parseISO(item.transferDate), "dd/MM/yyyy")}</p>
-              </div>
-              <div>
-                <p>
-                  Valor: R${" "}
-                  {item.amount.toLocaleString("pt-BR", {
-                    minimumFractionDigits: 2,
-                  })}
-                </p>
-              </div>
-              <div>
-                <p>Tipo: {item.type}</p>
-              </div>
-              <div>
-                <p>Nome do Operador: {item.transactionOperatorName}</p>
-              </div>
-            </div>
-          </List.Item>
-        )}
-        className="custom-list"
+        columns={[
+          {
+            title: "Data",
+            dataIndex: "transferDate",
+            key: "transferDate",
+            render: (transferDate) =>
+              format(parseISO(transferDate), "dd/MM/yyyy"),
+          },
+          {
+            title: "Valor",
+            dataIndex: "amount",
+            key: "amount",
+            render: (amount) => (
+              <span>
+                R${" "}
+                {amount.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+            ),
+          },
+          {
+            title: "Tipo",
+            dataIndex: "type",
+            key: "type",
+          },
+          {
+            title: "Nome do Operador",
+            dataIndex: "transactionOperatorName",
+            key: "transactionOperatorName",
+          },
+        ]}
+        pagination={false}
       />
     </div>
   );

@@ -15,15 +15,18 @@ body {
 }
 
 p {
+  font-size: larger;
   font-family: "Roboto", sans-serif;
 }
 
 .operator-text {
+  font-size: larger;
   font-family: "Roboto", sans-serif;
 }
 
 .custom-date-input,
 .custom-accountId,
 .input-operator-name {
+  font-size: larger;
   font-family: "Roboto", sans-serif;
 }

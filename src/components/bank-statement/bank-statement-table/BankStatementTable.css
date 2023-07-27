@@ -1,4 +1,4 @@
-.list-container {
+.table.container {
   border-left: 1px solid #000;
   border-right: 1px solid #000;
   border-radius: 0;
@@ -10,9 +10,9 @@
 
 .custom-list div {
   flex: 1;
-  margin-right: 10px; 
+  margin-right: 10px;
 }
 
 .custom-list div:last-child {
-  margin-right: 0; 
+  margin-right: 0;
 }
