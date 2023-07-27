@@ -1,4 +1,4 @@
-# Teste técnico front end - Supera Inovação e Tecnologia
+# Teste técnico front-end - Supera Inovação e Tecnologia
 
 ## Objetivo 
 
